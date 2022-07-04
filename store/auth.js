@@ -1,11 +1,6 @@
-export const states = {
-  isLoading: false,
-}
-
 export const actions = {
-  login({ commit }, params) {
-    this.$axios.get('posts/1')
-    .then(({data}) => console.log(data))
-    console.log('login by vuex', params)
+  async login({ commit }, params) {
+    params = { ...params, device_name: 'Web Browser' }
+    return await this.$axios.$post('login', params)
   },
 }

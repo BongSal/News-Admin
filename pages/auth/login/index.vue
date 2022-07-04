@@ -45,10 +45,11 @@
                   type="password"
                 />
               </label>
+
               <button
-                class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                class="block flex justify-center w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               >
-                Log in
+                <span>Log in</span>
               </button>
             </form>
 
@@ -75,18 +76,28 @@ import { mapActions } from 'vuex'
 export default {
   layout: 'blank',
   name: 'LoginPage',
+  middleware: 'redirectIfAuthenticated',
   data() {
     return {
+      isLoading: true,
       params: {
-        username: '',
-        password: '',
+        username: null,
+        password: null,
       },
     }
   },
   methods: {
     ...mapActions('auth', ['login']),
     onSubmit(e) {
+      this.isLoading = true
       this.login(this.params)
+        .then((res) => {
+          this.$cookiz.set('access_token', `Bearer ${res.access_token}`)
+          this.$router.push('/')
+        })
+        .catch((res) => {
+          this.isLoading = false
+        })
     },
   },
 }
